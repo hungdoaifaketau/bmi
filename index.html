@@ -51,7 +51,7 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Subtle animated background */
+        /* Subtle animated background - Optimized */
         body::before {
             content: '';
             position: fixed;
@@ -60,17 +60,11 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 15% 25%, rgba(0, 122, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 85% 75%, rgba(88, 86, 214, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(90, 200, 250, 0.1) 0%, transparent 60%);
+                radial-gradient(circle at 15% 25%, rgba(0, 122, 255, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(88, 86, 214, 0.12) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
-            animation: backgroundFloat 20s ease-in-out infinite;
-        }
-
-        @keyframes backgroundFloat {
-            0%, 100% { opacity: 1; transform: translateY(0) scale(1); }
-            50% { opacity: 0.9; transform: translateY(-20px) scale(1.02); }
+            will-change: opacity;
         }
 
         .container {
@@ -165,7 +159,7 @@
         .section-header {
             text-align: center;
             margin-bottom: 64px;
-            animation: fadeInUp 0.8s ease-out;
+            animation: fadeInUp 0.5s ease-out;
         }
 
         .section-title {
@@ -207,16 +201,17 @@
 
         .card {
             background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
             border-radius: var(--radius-lg);
             padding: 40px 32px;
             box-shadow: var(--shadow-medium);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.8s ease-out both;
+            animation: fadeInUp 0.6s ease-out both;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            will-change: transform;
         }
 
         .card:nth-child(1) { animation-delay: 0.1s; }
@@ -233,7 +228,7 @@
             height: 3px;
             background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple), var(--primary-cyan));
             transform: scaleX(0);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.3s ease;
         }
 
         .card:hover::before {
@@ -242,7 +237,7 @@
 
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: var(--shadow-large), var(--shadow-glow);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14), 0 0 30px rgba(0, 122, 255, 0.15);
             background: var(--card-bg);
         }
 
@@ -257,13 +252,14 @@
             border-radius: var(--radius-md);
             font-size: 2rem;
             color: white;
-            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 18px rgba(0, 122, 255, 0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
         }
 
         .card:hover .card-icon {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 12px 32px rgba(0, 122, 255, 0.4);
+            transform: scale(1.08) rotate(3deg);
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
         }
 
         .card:nth-child(2) .card-icon {
@@ -324,7 +320,7 @@
             max-width: 900px;
             margin: 0 auto;
             text-align: center;
-            animation: fadeInUp 0.8s ease-out;
+            animation: fadeInUp 0.5s ease-out;
         }
 
         .about-title {
@@ -365,12 +361,6 @@
             content: '💪';
             font-size: 10rem;
             opacity: 0.2;
-            animation: gentlePulse 4s ease-in-out infinite;
-        }
-
-        @keyframes gentlePulse {
-            0%, 100% { transform: scale(1); opacity: 0.2; }
-            50% { transform: scale(1.05); opacity: 0.25; }
         }
 
         /* CTA Section - Premium Button */
@@ -395,13 +385,14 @@
             border: none;
             border-radius: var(--radius-xl);
             cursor: pointer;
-            box-shadow: 0 12px 40px rgba(0, 122, 255, 0.3);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 8px 28px rgba(0, 122, 255, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             text-decoration: none;
             letter-spacing: -0.3px;
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+            will-change: transform;
         }
 
         .cta-button::before {
@@ -412,7 +403,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s;
+            transition: left 0.4s ease;
         }
 
         .cta-button:hover::before {
@@ -420,8 +411,8 @@
         }
 
         .cta-button:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 60px rgba(0, 122, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 122, 255, 0.35);
         }
 
         .cta-button:active {
@@ -434,9 +425,9 @@
 
         /* Footer - Premium Style */
         .footer {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 64px 24px;
             text-align: center;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -581,14 +572,14 @@
 
         .app-section {
             background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
             border-radius: var(--radius-lg);
             padding: 40px 32px;
             margin-bottom: 32px;
             box-shadow: var(--shadow-medium);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: fadeInUp 0.6s ease-out both;
+            animation: fadeInUp 0.5s ease-out both;
         }
 
         .app-section:nth-child(1) { animation-delay: 0.1s; }
@@ -665,7 +656,7 @@
             background: rgba(255, 255, 255, 0.9);
             border: 2px solid rgba(0, 0, 0, 0.08);
             border-radius: var(--radius-sm);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
             outline: none;
         }
 
@@ -673,7 +664,8 @@
         .form-select:focus {
             border-color: var(--primary-blue);
             background: white;
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+            transform: translateY(-1px);
         }
 
         .form-button {
@@ -686,15 +678,16 @@
             border: none;
             border-radius: var(--radius-md);
             cursor: pointer;
-            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             letter-spacing: -0.2px;
             margin-top: 8px;
+            will-change: transform;
         }
 
         .form-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0, 122, 255, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
         }
 
         .form-button:active {
@@ -885,13 +878,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s ease;
+            transition: transform 0.2s ease, background 0.2s ease;
             border: 1px solid rgba(0, 0, 0, 0.05);
+            will-change: transform;
         }
 
         .history-item:hover {
             background: rgba(255, 255, 255, 0.9);
-            transform: translateX(4px);
+            transform: translateX(2px);
         }
 
         .history-item-content {
@@ -953,15 +947,16 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            transition: all 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
             border: 1px solid rgba(0, 0, 0, 0.05);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            will-change: transform;
         }
 
         .activity-history-item:hover {
             background: rgba(255, 255, 255, 0.95);
-            transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateX(2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
         }
 
         .activity-history-icon {
@@ -1511,7 +1506,12 @@
 
         function getBMIHistory() {
             const data = localStorage.getItem(STORAGE_KEYS.BMI);
-            return data ? JSON.parse(data) : [];
+            if (!data) return [];
+            try {
+                return JSON.parse(data);
+            } catch (e) {
+                return [];
+            }
         }
 
         function updateBMIDisplay(bmi, category) {
@@ -1548,7 +1548,7 @@
                 return;
             }
 
-            container.innerHTML = history.map(record => {
+            const html = history.map(record => {
                 const date = new Date(record.timestamp);
                 const dateStr = date.toLocaleString('vi-VN', {
                     year: 'numeric',
@@ -1584,6 +1584,8 @@
                     </div>
                 `;
             }).join('');
+            
+            container.innerHTML = html;
         }
 
         // ==================== Activity Functions ====================
@@ -1595,13 +1597,9 @@
         }
 
         function handleActivitySave() {
-            console.log('🚀 handleActivitySave() called');
-            
             const type = document.getElementById('activityType').value;
             const distance = parseFloat(document.getElementById('distance').value);
             const duration = parseFloat(document.getElementById('duration').value);
-
-            console.log('📝 Form values:', { type, distance, duration });
 
             if (!type || !distance || !duration || distance <= 0 || duration <= 0) {
                 alert('Vui lòng nhập đầy đủ thông tin hoạt động!');
@@ -1610,11 +1608,10 @@
 
             // Get weight from last BMI record for calorie calculation
             const bmiHistory = getBMIHistory();
-            const weight = bmiHistory.length > 0 ? bmiHistory[0].weight : 70; // Default 70kg
+            const weight = bmiHistory.length > 0 ? bmiHistory[0].weight : 70;
 
             // Calculate calories
             const calories = calculateCalories(type, weight, duration);
-            console.log('🔥 Calculated calories:', calories);
 
             // Create record
             const record = {
@@ -1627,15 +1624,8 @@
                 calories: calories
             };
 
-            console.log('💾 Saving record:', record);
-
             // Save to localStorage
             saveActivityHistory(record);
-
-            // Verify save
-            const savedHistory = getActivityHistory();
-            console.log('✅ Saved history length:', savedHistory.length);
-            console.log('✅ Latest record:', savedHistory[0]);
 
             // Update display
             updateActivitySummary();
@@ -1656,37 +1646,17 @@
         }
 
         function saveActivityHistory(record) {
-            console.log('💾 saveActivityHistory() called with record:', record);
             let history = getActivityHistory();
-            console.log('📚 Current history before save:', history);
             history.unshift(record);
-            console.log('📚 History after adding new record:', history);
-            const key = STORAGE_KEYS.ACTIVITY;
-            console.log('🔑 Storage key:', key);
-            localStorage.setItem(key, JSON.stringify(history));
-            
-            // Verify save
-            const verify = localStorage.getItem(key);
-            console.log('✅ Verification - saved data:', verify);
-            const parsed = JSON.parse(verify);
-            console.log('✅ Verification - parsed data length:', parsed.length);
+            localStorage.setItem(STORAGE_KEYS.ACTIVITY, JSON.stringify(history));
         }
 
         function getActivityHistory() {
-            const key = STORAGE_KEYS.ACTIVITY;
-            const data = localStorage.getItem(key);
-            console.log('📖 getActivityHistory() - key:', key);
-            console.log('📖 getActivityHistory() - raw data:', data);
-            if (!data) {
-                console.log('📭 No data found in localStorage');
-                return [];
-            }
+            const data = localStorage.getItem(STORAGE_KEYS.ACTIVITY);
+            if (!data) return [];
             try {
-                const parsed = JSON.parse(data);
-                console.log('📖 getActivityHistory() - parsed data:', parsed);
-                return parsed;
+                return JSON.parse(data);
             } catch (e) {
-                console.error('❌ Error parsing activity history:', e);
                 return [];
             }
         }
@@ -1716,22 +1686,14 @@
         }
 
         function renderActivityHistory() {
-            console.log('🔍 renderActivityHistory() called');
-            
             const container = document.getElementById('activityHistoryList');
             const emptyContainer = document.getElementById('activityHistoryEmpty');
             
-            if (!container) {
-                console.error('❌ Container activityHistoryList not found!');
-                return;
-            }
+            if (!container) return;
 
             const history = getActivityHistory();
-            console.log('📊 Activity history from localStorage:', history);
-            console.log('📊 History length:', history.length);
 
             if (history.length === 0) {
-                console.log('📭 No activities found, showing empty state');
                 if (emptyContainer) {
                     emptyContainer.style.display = 'block';
                 }
@@ -1739,13 +1701,12 @@
                 return;
             }
 
-            // Hide empty state
             if (emptyContainer) {
                 emptyContainer.style.display = 'none';
             }
 
-            // Render history items
-            container.innerHTML = history.map(record => {
+            // Build HTML string efficiently
+            const html = history.map(record => {
                 const date = new Date(record.timestamp);
                 const dateStr = date.toLocaleString('vi-VN', {
                     year: 'numeric',
@@ -1792,8 +1753,8 @@
                     </div>
                 `;
             }).join('');
-
-            console.log('✅ Activity history rendered successfully');
+            
+            container.innerHTML = html;
         }
 
         // ==================== Heart Rate Functions ====================
@@ -1851,7 +1812,12 @@
 
         function getHeartRateHistory() {
             const data = localStorage.getItem(STORAGE_KEYS.HEART_RATE);
-            return data ? JSON.parse(data) : [];
+            if (!data) return [];
+            try {
+                return JSON.parse(data);
+            } catch (e) {
+                return [];
+            }
         }
 
         function updateHeartRateDisplay(record) {
@@ -1880,7 +1846,7 @@
                 return;
             }
 
-            container.innerHTML = history.map(record => {
+            const html = history.map(record => {
                 const date = new Date(record.timestamp);
                 const dateStr = date.toLocaleString('vi-VN', {
                     year: 'numeric',
@@ -1904,6 +1870,8 @@
                     </div>
                 `;
             }).join('');
+            
+            container.innerHTML = html;
         }
 
         // ==================== Load All History ====================
@@ -1918,10 +1886,8 @@
             renderBMIHistory();
 
             // Load activity history
-            console.log('🔄 Loading activity history on page load...');
             updateActivitySummary();
             renderActivityHistory();
-            console.log('✅ Activity history loaded');
 
             // Load heart rate history
             const heartRateHistory = getHeartRateHistory();
