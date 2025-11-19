@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HL Fitness - Theo dõi sức khỏe thông minh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #007AFF;
+            --primary-purple: #5856D6;
+            --primary-cyan: #5AC8FA;
+            --accent-orange: #FF9500;
+            --accent-pink: #FF2D55;
+            --dark-bg: #000000;
+            --dark-surface: #1C1C1E;
+            --light-surface: #F2F2F7;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --text-white: #FFFFFF;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --shadow-large: 0 16px 48px rgba(0, 0, 0, 0.16);
+            --shadow-glow: 0 0 40px rgba(0, 122, 255, 0.2);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --radius-xl: 40px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #000000 0%, #1C1C1E 30%, #2C2C2E 60%, #000000 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Subtle animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(0, 122, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(88, 86, 214, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(90, 200, 250, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { opacity: 1; transform: translateY(0) scale(1); }
+            50% { opacity: 0.9; transform: translateY(-20px) scale(1.02); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Hero Section - Premium Style */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(3rem, 10vw, 6.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0.6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            margin-bottom: 32px;
+            line-height: 1.1;
+            animation: fadeInDown 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .tagline {
+            font-size: clamp(1.125rem, 3.5vw, 1.75rem);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 720px;
+            margin: 0 auto;
+            line-height: 1.6;
+            letter-spacing: -0.3px;
+            animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards Grid Section - Premium Card Design */
+        .cards-section {
+            padding: 100px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: var(--text-white);
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .section-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 640px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 28px;
+            }
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: var(--radius-lg);
+            padding: 40px 32px;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out both;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple), var(--primary-cyan));
+            transform: scaleX(0);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-large), var(--shadow-glow);
+            background: var(--card-bg);
+        }
+
+        .card-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: var(--radius-md);
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 32px rgba(0, 122, 255, 0.4);
+        }
+
+        .card:nth-child(2) .card-icon {
+            background: linear-gradient(135deg, var(--accent-orange), #FF6B35);
+        }
+
+        .card:nth-child(3) .card-icon {
+            background: linear-gradient(135deg, #34C759, var(--primary-cyan));
+        }
+
+        .card:nth-child(4) .card-icon {
+            background: linear-gradient(135deg, var(--accent-pink), var(--primary-purple));
+        }
+
+        .card-value {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            text-align: center;
+            letter-spacing: -0.3px;
+        }
+
+        .card-description {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-unit {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* About Section - Premium Typography */
+        .about-section {
+            padding: 100px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .about-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            color: var(--text-white);
+            margin-bottom: 32px;
+            line-height: 1.2;
+            letter-spacing: -1.5px;
+        }
+
+        .about-text {
+            font-size: clamp(1.125rem, 3vw, 1.375rem);
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+            margin-bottom: 24px;
+            letter-spacing: -0.2px;
+        }
+
+        .about-visual {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            margin: 48px auto 0;
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(88, 86, 214, 0.1));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-large);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .about-visual::before {
+            content: '💪';
+            font-size: 10rem;
+            opacity: 0.2;
+            animation: gentlePulse 4s ease-in-out infinite;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.05); opacity: 0.25; }
+        }
+
+        /* CTA Section - Premium Button */
+        .cta-section {
+            padding: 100px 24px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px 56px;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(1.125rem, 3vw, 1.375rem);
+            font-weight: 600;
+            color: var(--text-white);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+            border: none;
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            box-shadow: 0 12px 40px rgba(0, 122, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            letter-spacing: -0.3px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0, 122, 255, 0.4);
+        }
+
+        .cta-button:active {
+            transform: translateY(-2px);
+        }
+
+        .cta-button i {
+            font-size: 1.25rem;
+        }
+
+        /* Footer - Premium Style */
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            padding: 64px 24px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-text {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 12px;
+            font-weight: 500;
+            letter-spacing: -0.2px;
+        }
+
+        .footer-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-copyright {
+            font-size: 0.9375rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 8px;
+            letter-spacing: -0.2px;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .hero {
+                min-height: 85vh;
+                padding: 40px 20px;
+            }
+
+            .logo {
+                letter-spacing: -1px;
+                margin-bottom: 24px;
+            }
+
+            .tagline {
+                margin-bottom: 0;
+            }
+
+            .card {
+                padding: 32px 24px;
+                border-radius: var(--radius-md);
+            }
+
+            .card-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 1.75rem;
+                margin-bottom: 24px;
+            }
+
+            .card-title {
+                font-size: 1.125rem;
+            }
+
+            .card-description {
+                font-size: 0.875rem;
+            }
+
+            .about-visual {
+                height: 280px;
+                margin-top: 32px;
+            }
+
+            .about-visual::before {
+                font-size: 6rem;
+            }
+
+            .cta-button {
+                padding: 18px 40px;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .cards-section,
+            .about-section,
+            .cta-section {
+                padding: 80px 20px;
+            }
+
+            .section-header {
+                margin-bottom: 48px;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection */
+        ::selection {
+            background: rgba(0, 122, 255, 0.3);
+            color: var(--text-white);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="logo">HL FITNESS</h1>
+            <p class="tagline">Theo dõi sức khỏe thông minh – Nâng tầm lối sống của bạn</p>
+        </div>
+    </section>
+
+    <!-- Cards Grid Section -->
+    <section class="cards-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Theo dõi toàn diện</h2>
+                <p class="section-subtitle">Quản lý sức khỏe của bạn một cách khoa học và hiệu quả</p>
+            </div>
+            <div class="cards-grid">
+                <!-- BMI Card -->
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="ri-line-chart-line"></i>
+                    </div>
+                    <div class="card-value">22.5</div>
+                    <h3 class="card-title">BMI</h3>
+                    <p class="card-description">Chỉ số khối cơ thể</p>
+                    <p class="card-unit">Bình thường</p>
+                </div>
+
+                <!-- Calories Card -->
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="ri-fire-line"></i>
+                    </div>
+                    <div class="card-value">1,240</div>
+                    <h3 class="card-title">Calories</h3>
+                    <p class="card-description">Calo đã đốt hôm nay</p>
+                    <p class="card-unit">kcal</p>
+                </div>
+
+                <!-- Distance Card -->
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="ri-road-map-line"></i>
+                    </div>
+                    <div class="card-value">8.5</div>
+                    <h3 class="card-title">Distance</h3>
+                    <p class="card-description">Quãng đường đã đi</p>
+                    <p class="card-unit">km</p>
+                </div>
+
+                <!-- Heart Rate Card -->
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="ri-heart-pulse-line"></i>
+                    </div>
+                    <div class="card-value">72</div>
+                    <h3 class="card-title">Heart Rate</h3>
+                    <p class="card-description">Nhịp tim trung bình</p>
+                    <p class="card-unit">bpm</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <h2 class="about-title">Về HL Fitness</h2>
+                <p class="about-text">
+                    HL Fitness là hệ thống theo dõi sức khỏe thông minh, được thiết kế để giúp bạn quản lý và cải thiện sức khỏe một cách khoa học. 
+                    Với công nghệ hiện đại và giao diện trực quan, chúng tôi mang đến trải nghiệm theo dõi sức khỏe toàn diện.
+                </p>
+                <p class="about-text">
+                    Từ BMI, calo, quãng đường đến nhịp tim – tất cả được tích hợp trong một nền tảng duy nhất, giúp bạn dễ dàng theo dõi và đạt được mục tiêu sức khỏe của mình.
+                </p>
+                <div class="about-visual"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <a href="#" class="cta-button">
+                <span>Bắt đầu ngay</span>
+                <i class="ri-arrow-right-line"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">Design by <span class="footer-brand">Phúc Nguyên</span></p>
+                <p class="footer-copyright">HL Fitness © 2025</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
