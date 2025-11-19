@@ -861,8 +861,15 @@
             font-size: 1.25rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 20px;
+            margin-bottom: 8px;
             letter-spacing: -0.3px;
+        }
+
+        .history-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
 
         .history-list {
@@ -929,6 +936,94 @@
             font-size: 2.5rem;
             margin-bottom: 12px;
             opacity: 0.3;
+            display: block;
+        }
+
+        /* Activity History List Styles */
+        .activity-history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-history-item {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .activity-history-item:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .activity-history-icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .activity-history-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-history-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .activity-history-type {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .activity-history-date {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .activity-history-details {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .activity-history-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.875rem;
+        }
+
+        .activity-history-detail-label {
+            color: var(--text-secondary);
+        }
+
+        .activity-history-detail-value {
+            color: var(--text-primary);
+            font-weight: 600;
         }
 
         /* Mobile adjustments for app panel */
@@ -1019,6 +1114,29 @@
             }
 
             .history-item-data {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .activity-history-item {
+                padding: 14px;
+                gap: 12px;
+            }
+
+            .activity-history-icon {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                font-size: 1.25rem;
+            }
+
+            .activity-history-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .activity-history-details {
                 flex-direction: column;
                 gap: 8px;
             }
@@ -1223,7 +1341,12 @@
                     <!-- Lịch sử hoạt động -->
                     <div class="history-section">
                         <h3 class="history-title">Lịch sử hoạt động</h3>
-                        <div id="activityHistoryList" class="activity-list"></div>
+                        <p class="history-subtitle">Danh sách những hoạt động bạn đã ghi lại gần đây</p>
+                        <div id="activityHistoryEmpty" class="history-empty" style="display: none;">
+                            <i class="ri-file-list-line"></i>
+                            <p>Chưa có hoạt động nào được lưu</p>
+                        </div>
+                        <div id="activityHistoryList" class="activity-history-list"></div>
                     </div>
                 </div>
 
@@ -1472,9 +1595,13 @@
         }
 
         function handleActivitySave() {
+            console.log('🚀 handleActivitySave() called');
+            
             const type = document.getElementById('activityType').value;
             const distance = parseFloat(document.getElementById('distance').value);
             const duration = parseFloat(document.getElementById('duration').value);
+
+            console.log('📝 Form values:', { type, distance, duration });
 
             if (!type || !distance || !duration || distance <= 0 || duration <= 0) {
                 alert('Vui lòng nhập đầy đủ thông tin hoạt động!');
@@ -1487,6 +1614,7 @@
 
             // Calculate calories
             const calories = calculateCalories(type, weight, duration);
+            console.log('🔥 Calculated calories:', calories);
 
             // Create record
             const record = {
@@ -1499,8 +1627,15 @@
                 calories: calories
             };
 
+            console.log('💾 Saving record:', record);
+
             // Save to localStorage
             saveActivityHistory(record);
+
+            // Verify save
+            const savedHistory = getActivityHistory();
+            console.log('✅ Saved history length:', savedHistory.length);
+            console.log('✅ Latest record:', savedHistory[0]);
 
             // Update display
             updateActivitySummary();
@@ -1521,14 +1656,39 @@
         }
 
         function saveActivityHistory(record) {
+            console.log('💾 saveActivityHistory() called with record:', record);
             let history = getActivityHistory();
+            console.log('📚 Current history before save:', history);
             history.unshift(record);
-            localStorage.setItem(STORAGE_KEYS.ACTIVITY, JSON.stringify(history));
+            console.log('📚 History after adding new record:', history);
+            const key = STORAGE_KEYS.ACTIVITY;
+            console.log('🔑 Storage key:', key);
+            localStorage.setItem(key, JSON.stringify(history));
+            
+            // Verify save
+            const verify = localStorage.getItem(key);
+            console.log('✅ Verification - saved data:', verify);
+            const parsed = JSON.parse(verify);
+            console.log('✅ Verification - parsed data length:', parsed.length);
         }
 
         function getActivityHistory() {
-            const data = localStorage.getItem(STORAGE_KEYS.ACTIVITY);
-            return data ? JSON.parse(data) : [];
+            const key = STORAGE_KEYS.ACTIVITY;
+            const data = localStorage.getItem(key);
+            console.log('📖 getActivityHistory() - key:', key);
+            console.log('📖 getActivityHistory() - raw data:', data);
+            if (!data) {
+                console.log('📭 No data found in localStorage');
+                return [];
+            }
+            try {
+                const parsed = JSON.parse(data);
+                console.log('📖 getActivityHistory() - parsed data:', parsed);
+                return parsed;
+            } catch (e) {
+                console.error('❌ Error parsing activity history:', e);
+                return [];
+            }
         }
 
         function updateActivitySummary() {
@@ -1556,21 +1716,35 @@
         }
 
         function renderActivityHistory() {
+            console.log('🔍 renderActivityHistory() called');
+            
             const container = document.getElementById('activityHistoryList');
-            if (!container) return;
-
-            const history = getActivityHistory();
-
-            if (history.length === 0) {
-                container.innerHTML = `
-                    <div class="history-empty">
-                        <i class="ri-file-list-line"></i>
-                        <p>Chưa có hoạt động nào</p>
-                    </div>
-                `;
+            const emptyContainer = document.getElementById('activityHistoryEmpty');
+            
+            if (!container) {
+                console.error('❌ Container activityHistoryList not found!');
                 return;
             }
 
+            const history = getActivityHistory();
+            console.log('📊 Activity history from localStorage:', history);
+            console.log('📊 History length:', history.length);
+
+            if (history.length === 0) {
+                console.log('📭 No activities found, showing empty state');
+                if (emptyContainer) {
+                    emptyContainer.style.display = 'block';
+                }
+                container.innerHTML = '';
+                return;
+            }
+
+            // Hide empty state
+            if (emptyContainer) {
+                emptyContainer.style.display = 'none';
+            }
+
+            // Render history items
             container.innerHTML = history.map(record => {
                 const date = new Date(record.timestamp);
                 const dateStr = date.toLocaleString('vi-VN', {
@@ -1591,23 +1765,35 @@
                     : 'linear-gradient(135deg, #34C759, var(--primary-cyan))';
 
                 return `
-                    <div class="activity-item">
-                        <div class="activity-info">
-                            <div class="activity-icon" style="background: ${iconBg};">
-                                <i class="${iconClass}"></i>
-                            </div>
-                            <div class="activity-details">
-                                <h4>${record.typeName}</h4>
-                                <p>${record.duration} phút • ${dateStr}</p>
-                            </div>
+                    <div class="activity-history-item">
+                        <div class="activity-history-icon" style="background: ${iconBg};">
+                            <i class="${iconClass}"></i>
                         </div>
-                        <div class="activity-stats">
-                            <div class="value">${record.distance} km</div>
-                            <div class="unit">${record.calories} kcal</div>
+                        <div class="activity-history-content">
+                            <div class="activity-history-header">
+                                <span class="activity-history-type">${record.typeName}</span>
+                                <span class="activity-history-date">${dateStr}</span>
+                            </div>
+                            <div class="activity-history-details">
+                                <div class="activity-history-detail-item">
+                                    <span class="activity-history-detail-label">Quãng đường:</span>
+                                    <span class="activity-history-detail-value">${record.distance} km</span>
+                                </div>
+                                <div class="activity-history-detail-item">
+                                    <span class="activity-history-detail-label">Thời gian:</span>
+                                    <span class="activity-history-detail-value">${record.duration} phút</span>
+                                </div>
+                                <div class="activity-history-detail-item">
+                                    <span class="activity-history-detail-label">Calo đốt:</span>
+                                    <span class="activity-history-detail-value">${record.calories} kcal</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            console.log('✅ Activity history rendered successfully');
         }
 
         // ==================== Heart Rate Functions ====================
@@ -1732,8 +1918,10 @@
             renderBMIHistory();
 
             // Load activity history
+            console.log('🔄 Loading activity history on page load...');
             updateActivitySummary();
             renderActivityHistory();
+            console.log('✅ Activity history loaded');
 
             // Load heart rate history
             const heartRateHistory = getHeartRateHistory();
