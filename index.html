@@ -849,21 +849,105 @@
             color: var(--text-primary);
         }
 
+        /* History Section Styles */
+        .history-section {
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .history-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(4px);
+        }
+
+        .history-item-content {
+            flex: 1;
+        }
+
+        .history-item-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .history-item-data {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .history-item-value {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-item-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        .history-empty i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.3;
+        }
+
         /* Mobile adjustments for app panel */
         @media (max-width: 640px) {
             #app-panel {
-                padding: 60px 20px;
+                padding: 40px 16px;
             }
 
             .app-section {
-                padding: 32px 24px;
+                padding: 24px 20px;
                 border-radius: var(--radius-md);
+                margin-bottom: 24px;
             }
 
             .app-section-header {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: row;
+                align-items: center;
                 gap: 12px;
+                margin-bottom: 24px;
             }
 
             .app-section-icon {
@@ -872,23 +956,71 @@
                 font-size: 1.5rem;
             }
 
+            .app-section-title {
+                font-size: 1.25rem;
+            }
+
             .form-grid {
-                gap: 20px;
+                gap: 18px;
+            }
+
+            .form-input,
+            .form-select {
+                padding: 14px 18px;
+                font-size: 1rem;
+            }
+
+            .form-button {
+                padding: 14px 24px;
+                font-size: 0.9375rem;
+            }
+
+            .bmi-display,
+            .heart-rate-display {
+                padding: 24px 20px;
+            }
+
+            .bmi-value-large,
+            .heart-rate-value {
+                font-size: 2.5rem;
             }
 
             .activity-summary {
                 grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .summary-card {
+                padding: 18px;
             }
 
             .activity-item {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 12px;
+                padding: 14px;
             }
 
             .activity-stats {
                 text-align: left;
                 width: 100%;
+            }
+
+            .history-section {
+                margin-top: 24px;
+                padding-top: 24px;
+            }
+
+            .history-item {
+                padding: 14px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .history-item-data {
+                flex-direction: column;
+                gap: 8px;
             }
         }
     </style>
@@ -1022,9 +1154,14 @@
                             <input type="number" id="weight" class="form-input" placeholder="Ví dụ: 65" min="20" max="300">
                         </div>
                         <div class="form-group full-width">
-                            <button type="button" class="form-button">Lưu thông tin</button>
+                            <button type="button" class="form-button" id="saveHealthInfoBtn">Tính BMI & Lưu thông tin</button>
                         </div>
                     </form>
+                    <!-- Lịch sử BMI -->
+                    <div class="history-section">
+                        <h3 class="history-title">Lịch sử BMI</h3>
+                        <div id="bmiHistoryList" class="history-list"></div>
+                    </div>
                 </div>
 
                 <!-- (b) Khối BMI -->
@@ -1035,11 +1172,11 @@
                         </div>
                         <h2 class="app-section-title">BMI – Chỉ số khối cơ thể</h2>
                     </div>
-                    <div class="bmi-display">
-                        <div class="bmi-value-large">22.5</div>
-                        <div class="bmi-status">BMI hiện tại: 22.5 (Bình thường)</div>
-                        <div class="bmi-suggestion">
-                            Chúc mừng! Bạn đang duy trì cân nặng hợp lý. Hãy tiếp tục chế độ ăn uống và tập luyện hiện tại để giữ gìn sức khỏe tốt.
+                    <div class="bmi-display" id="bmiDisplay">
+                        <div class="bmi-value-large" id="bmiValueDisplay">--</div>
+                        <div class="bmi-status" id="bmiStatusDisplay">Nhập thông tin để tính BMI</div>
+                        <div class="bmi-suggestion" id="bmiSuggestionDisplay">
+                            Vui lòng nhập chiều cao và cân nặng để tính chỉ số BMI của bạn.
                         </div>
                     </div>
                 </div>
@@ -1070,50 +1207,23 @@
                             <input type="number" id="duration" class="form-input" placeholder="Ví dụ: 45" min="1">
                         </div>
                         <div class="form-group full-width">
-                            <button type="button" class="form-button">Thêm hoạt động</button>
+                            <button type="button" class="form-button" id="addActivityBtn">Thêm hoạt động</button>
                         </div>
                     </form>
                     <div class="activity-summary">
                         <div class="summary-card">
-                            <div class="summary-value">5.2</div>
+                            <div class="summary-value" id="totalDistance">0</div>
                             <div class="summary-label">Tổng km hôm nay</div>
                         </div>
                         <div class="summary-card">
-                            <div class="summary-value">430</div>
+                            <div class="summary-value" id="totalCalories">0</div>
                             <div class="summary-label">Calo đốt (kcal)</div>
                         </div>
                     </div>
-                    <div class="activity-list">
-                        <div class="activity-item">
-                            <div class="activity-info">
-                                <div class="activity-icon">
-                                    <i class="ri-run-line"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <h4>Chạy bộ</h4>
-                                    <p>30 phút • Sáng</p>
-                                </div>
-                            </div>
-                            <div class="activity-stats">
-                                <div class="value">3.5 km</div>
-                                <div class="unit">280 kcal</div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-info">
-                                <div class="activity-icon" style="background: linear-gradient(135deg, #34C759, var(--primary-cyan));">
-                                    <i class="ri-walk-line"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <h4>Đi bộ</h4>
-                                    <p>25 phút • Chiều</p>
-                                </div>
-                            </div>
-                            <div class="activity-stats">
-                                <div class="value">1.7 km</div>
-                                <div class="unit">150 kcal</div>
-                            </div>
-                        </div>
+                    <!-- Lịch sử hoạt động -->
+                    <div class="history-section">
+                        <h3 class="history-title">Lịch sử hoạt động</h3>
+                        <div id="activityHistoryList" class="activity-list"></div>
                     </div>
                 </div>
 
@@ -1131,15 +1241,20 @@
                             <input type="number" id="heartRate" class="form-input" placeholder="Ví dụ: 78" min="30" max="220">
                         </div>
                         <div class="form-group full-width">
-                            <button type="button" class="form-button">Ghi lại</button>
+                            <button type="button" class="form-button" id="saveHeartRateBtn">Ghi lại</button>
                         </div>
                     </form>
-                    <div class="heart-rate-display">
-                        <div class="heart-rate-value">78</div>
-                        <div class="heart-rate-status">Nhịp tim gần nhất: 78 bpm</div>
-                        <div class="heart-rate-status" style="margin-top: 8px; font-size: 1rem; font-weight: 500; color: var(--text-secondary);">
-                            Đánh giá: Bình thường
+                    <div class="heart-rate-display" id="heartRateDisplay">
+                        <div class="heart-rate-value" id="heartRateValueDisplay">--</div>
+                        <div class="heart-rate-status" id="heartRateStatusDisplay">Chưa có dữ liệu nhịp tim</div>
+                        <div class="heart-rate-status" id="heartRateCommentDisplay" style="margin-top: 8px; font-size: 1rem; font-weight: 500; color: var(--text-secondary);">
+                            Vui lòng nhập nhịp tim để theo dõi
                         </div>
+                    </div>
+                    <!-- Lịch sử nhịp tim -->
+                    <div class="history-section">
+                        <h3 class="history-title">Lịch sử nhịp tim</h3>
+                        <div id="heartRateHistoryList" class="history-list"></div>
                     </div>
                 </div>
             </div>
@@ -1157,19 +1272,29 @@
     </footer>
 
     <script>
-        // Simple JavaScript to show app panel when "Bắt đầu" button is clicked
+        // Storage Keys
+        const STORAGE_KEYS = {
+            BMI: 'hl_bmi_history',
+            ACTIVITY: 'hl_activity_history',
+            HEART_RATE: 'hl_heart_history'
+        };
+
+        // MET values for calorie calculation
+        const MET_VALUES = {
+            walking: 3.5,
+            running: 7.0
+        };
+
+        // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
+            // Show app panel handler
             const startButton = document.getElementById('startButton');
             const appPanel = document.getElementById('app-panel');
 
             if (startButton && appPanel) {
                 startButton.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
-                    // Show the app panel
                     appPanel.classList.add('active');
-                    
-                    // Smooth scroll to app panel
                     setTimeout(() => {
                         appPanel.scrollIntoView({ 
                             behavior: 'smooth', 
@@ -1178,7 +1303,495 @@
                     }, 100);
                 });
             }
+
+            // Initialize all handlers
+            initBMIHandler();
+            initActivityHandler();
+            initHeartRateHandler();
+            
+            // Load existing data
+            loadAllHistory();
         });
+
+        // ==================== BMI Functions ====================
+        function initBMIHandler() {
+            const btn = document.getElementById('saveHealthInfoBtn');
+            if (btn) {
+                btn.addEventListener('click', handleBMISave);
+            }
+        }
+
+        function handleBMISave() {
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const age = parseInt(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const fullName = document.getElementById('fullName').value;
+
+            // Validation
+            if (!height || !weight || height < 50 || height > 250 || weight < 20 || weight > 300) {
+                alert('Vui lòng nhập chiều cao (50-250 cm) và cân nặng (20-300 kg) hợp lệ!');
+                return;
+            }
+
+            // Calculate BMI
+            const bmi = calculateBMI(height, weight);
+            const bmiCategory = getBMICategory(bmi);
+
+            // Create record
+            const record = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                fullName: fullName || 'Người dùng',
+                age: age || null,
+                gender: gender || null,
+                height: height,
+                weight: weight,
+                bmi: bmi,
+                category: bmiCategory.name,
+                status: bmiCategory.status
+            };
+
+            // Save to localStorage
+            saveBMIHistory(record);
+
+            // Update display
+            updateBMIDisplay(bmi, bmiCategory);
+            renderBMIHistory();
+
+            // Show success message
+            showNotification('Đã lưu thông tin BMI thành công!');
+        }
+
+        function calculateBMI(height, weight) {
+            const heightInMeters = height / 100;
+            return Math.round((weight / (heightInMeters * heightInMeters)) * 10) / 10;
+        }
+
+        function getBMICategory(bmi) {
+            if (bmi < 18.5) {
+                return { name: 'Thiếu cân', status: 'Thiếu cân', color: '#3B82F6' };
+            } else if (bmi < 23) {
+                return { name: 'Bình thường', status: 'Bình thường', color: '#10B981' };
+            } else if (bmi < 25) {
+                return { name: 'Thừa cân', status: 'Thừa cân', color: '#F59E0B' };
+            } else {
+                return { name: 'Béo phì', status: 'Béo phì', color: '#EF4444' };
+            }
+        }
+
+        function saveBMIHistory(record) {
+            let history = getBMIHistory();
+            history.unshift(record); // Add to beginning
+            localStorage.setItem(STORAGE_KEYS.BMI, JSON.stringify(history));
+        }
+
+        function getBMIHistory() {
+            const data = localStorage.getItem(STORAGE_KEYS.BMI);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function updateBMIDisplay(bmi, category) {
+            const bmiValueEl = document.getElementById('bmiValueDisplay');
+            const bmiStatusEl = document.getElementById('bmiStatusDisplay');
+            const bmiSuggestionEl = document.getElementById('bmiSuggestionDisplay');
+
+            if (bmiValueEl) bmiValueEl.textContent = bmi;
+            if (bmiStatusEl) bmiStatusEl.textContent = `BMI hiện tại: ${bmi} (${category.status})`;
+            
+            const suggestions = {
+                'Thiếu cân': 'Bạn nên tăng cường dinh dưỡng và tập luyện để tăng cân một cách lành mạnh.',
+                'Bình thường': 'Chúc mừng! Bạn đang duy trì cân nặng hợp lý. Hãy tiếp tục chế độ ăn uống và tập luyện hiện tại.',
+                'Thừa cân': 'Bạn nên điều chỉnh chế độ ăn uống và tăng cường vận động để giảm cân.',
+                'Béo phì': 'Bạn nên tham khảo ý kiến bác sĩ và có kế hoạch giảm cân khoa học.'
+            };
+            
+            if (bmiSuggestionEl) bmiSuggestionEl.textContent = suggestions[category.name] || '';
+        }
+
+        function renderBMIHistory() {
+            const container = document.getElementById('bmiHistoryList');
+            if (!container) return;
+
+            const history = getBMIHistory();
+            
+            if (history.length === 0) {
+                container.innerHTML = `
+                    <div class="history-empty">
+                        <i class="ri-file-list-line"></i>
+                        <p>Chưa có lịch sử BMI</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = history.map(record => {
+                const date = new Date(record.timestamp);
+                const dateStr = date.toLocaleString('vi-VN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="history-item">
+                        <div class="history-item-content">
+                            <div class="history-item-date">${dateStr}</div>
+                            <div class="history-item-data">
+                                <span class="history-item-value">
+                                    <strong>${record.height} cm</strong>
+                                    <span class="history-item-label">Chiều cao</span>
+                                </span>
+                                <span class="history-item-value">
+                                    <strong>${record.weight} kg</strong>
+                                    <span class="history-item-label">Cân nặng</span>
+                                </span>
+                                <span class="history-item-value">
+                                    <strong>${record.bmi}</strong>
+                                    <span class="history-item-label">BMI</span>
+                                </span>
+                                <span class="history-item-value">
+                                    <strong>${record.status}</strong>
+                                    <span class="history-item-label">Trạng thái</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== Activity Functions ====================
+        function initActivityHandler() {
+            const btn = document.getElementById('addActivityBtn');
+            if (btn) {
+                btn.addEventListener('click', handleActivitySave);
+            }
+        }
+
+        function handleActivitySave() {
+            const type = document.getElementById('activityType').value;
+            const distance = parseFloat(document.getElementById('distance').value);
+            const duration = parseFloat(document.getElementById('duration').value);
+
+            if (!type || !distance || !duration || distance <= 0 || duration <= 0) {
+                alert('Vui lòng nhập đầy đủ thông tin hoạt động!');
+                return;
+            }
+
+            // Get weight from last BMI record for calorie calculation
+            const bmiHistory = getBMIHistory();
+            const weight = bmiHistory.length > 0 ? bmiHistory[0].weight : 70; // Default 70kg
+
+            // Calculate calories
+            const calories = calculateCalories(type, weight, duration);
+
+            // Create record
+            const record = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                type: type,
+                typeName: type === 'walking' ? 'Đi bộ' : 'Chạy',
+                distance: distance,
+                duration: duration,
+                calories: calories
+            };
+
+            // Save to localStorage
+            saveActivityHistory(record);
+
+            // Update display
+            updateActivitySummary();
+            renderActivityHistory();
+
+            // Clear form
+            document.getElementById('activityType').value = '';
+            document.getElementById('distance').value = '';
+            document.getElementById('duration').value = '';
+
+            showNotification('Đã thêm hoạt động thành công!');
+        }
+
+        function calculateCalories(activityType, weight, durationMinutes) {
+            const met = MET_VALUES[activityType] || 3.5;
+            const durationHours = durationMinutes / 60;
+            return Math.round(met * weight * durationHours);
+        }
+
+        function saveActivityHistory(record) {
+            let history = getActivityHistory();
+            history.unshift(record);
+            localStorage.setItem(STORAGE_KEYS.ACTIVITY, JSON.stringify(history));
+        }
+
+        function getActivityHistory() {
+            const data = localStorage.getItem(STORAGE_KEYS.ACTIVITY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function updateActivitySummary() {
+            const history = getActivityHistory();
+            const today = new Date().toISOString().split('T')[0];
+            
+            const todayActivities = history.filter(act => {
+                const actDate = new Date(act.timestamp).toISOString().split('T')[0];
+                return actDate === today;
+            });
+
+            let totalDistance = 0;
+            let totalCalories = 0;
+
+            todayActivities.forEach(act => {
+                totalDistance += act.distance;
+                totalCalories += act.calories;
+            });
+
+            const distanceEl = document.getElementById('totalDistance');
+            const caloriesEl = document.getElementById('totalCalories');
+
+            if (distanceEl) distanceEl.textContent = totalDistance.toFixed(1);
+            if (caloriesEl) caloriesEl.textContent = totalCalories;
+        }
+
+        function renderActivityHistory() {
+            const container = document.getElementById('activityHistoryList');
+            if (!container) return;
+
+            const history = getActivityHistory();
+
+            if (history.length === 0) {
+                container.innerHTML = `
+                    <div class="history-empty">
+                        <i class="ri-file-list-line"></i>
+                        <p>Chưa có hoạt động nào</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = history.map(record => {
+                const date = new Date(record.timestamp);
+                const dateStr = date.toLocaleString('vi-VN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const timeStr = date.toLocaleTimeString('vi-VN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const iconClass = record.type === 'running' ? 'ri-run-line' : 'ri-walk-line';
+                const iconBg = record.type === 'running' 
+                    ? 'linear-gradient(135deg, var(--accent-orange), #FF6B35)'
+                    : 'linear-gradient(135deg, #34C759, var(--primary-cyan))';
+
+                return `
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <div class="activity-icon" style="background: ${iconBg};">
+                                <i class="${iconClass}"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>${record.typeName}</h4>
+                                <p>${record.duration} phút • ${dateStr}</p>
+                            </div>
+                        </div>
+                        <div class="activity-stats">
+                            <div class="value">${record.distance} km</div>
+                            <div class="unit">${record.calories} kcal</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== Heart Rate Functions ====================
+        function initHeartRateHandler() {
+            const btn = document.getElementById('saveHeartRateBtn');
+            if (btn) {
+                btn.addEventListener('click', handleHeartRateSave);
+            }
+        }
+
+        function handleHeartRateSave() {
+            const heartRate = parseInt(document.getElementById('heartRate').value);
+
+            if (!heartRate || heartRate < 30 || heartRate > 220) {
+                alert('Vui lòng nhập nhịp tim hợp lệ (30-220 bpm)!');
+                return;
+            }
+
+            // Create record
+            const record = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                heartRate: heartRate,
+                status: getHeartRateStatus(heartRate)
+            };
+
+            // Save to localStorage
+            saveHeartRateHistory(record);
+
+            // Update display
+            updateHeartRateDisplay(record);
+            renderHeartRateHistory();
+
+            // Clear input
+            document.getElementById('heartRate').value = '';
+
+            showNotification('Đã ghi lại nhịp tim thành công!');
+        }
+
+        function getHeartRateStatus(heartRate) {
+            if (heartRate < 60) {
+                return { text: 'Nhịp chậm', comment: 'Có thể do thể trạng, cần theo dõi' };
+            } else if (heartRate <= 100) {
+                return { text: 'Bình thường', comment: 'Nhịp tim trong phạm vi bình thường' };
+            } else {
+                return { text: 'Nhịp nhanh', comment: 'Nên chú ý và theo dõi' };
+            }
+        }
+
+        function saveHeartRateHistory(record) {
+            let history = getHeartRateHistory();
+            history.unshift(record);
+            localStorage.setItem(STORAGE_KEYS.HEART_RATE, JSON.stringify(history));
+        }
+
+        function getHeartRateHistory() {
+            const data = localStorage.getItem(STORAGE_KEYS.HEART_RATE);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function updateHeartRateDisplay(record) {
+            const valueEl = document.getElementById('heartRateValueDisplay');
+            const statusEl = document.getElementById('heartRateStatusDisplay');
+            const commentEl = document.getElementById('heartRateCommentDisplay');
+
+            if (valueEl) valueEl.textContent = record.heartRate;
+            if (statusEl) statusEl.textContent = `Nhịp tim gần nhất: ${record.heartRate} bpm`;
+            if (commentEl) commentEl.textContent = `Đánh giá: ${record.status.text} - ${record.status.comment}`;
+        }
+
+        function renderHeartRateHistory() {
+            const container = document.getElementById('heartRateHistoryList');
+            if (!container) return;
+
+            const history = getHeartRateHistory();
+
+            if (history.length === 0) {
+                container.innerHTML = `
+                    <div class="history-empty">
+                        <i class="ri-file-list-line"></i>
+                        <p>Chưa có lịch sử nhịp tim</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = history.map(record => {
+                const date = new Date(record.timestamp);
+                const dateStr = date.toLocaleString('vi-VN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="history-item">
+                        <div class="history-item-content">
+                            <div class="history-item-date">${dateStr}</div>
+                            <div class="history-item-data">
+                                <span class="history-item-value">
+                                    <strong>${record.heartRate} bpm</strong>
+                                    <span class="history-item-label">${record.status.text}</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== Load All History ====================
+        function loadAllHistory() {
+            // Load BMI history
+            const bmiHistory = getBMIHistory();
+            if (bmiHistory.length > 0) {
+                const latest = bmiHistory[0];
+                const category = getBMICategory(latest.bmi);
+                updateBMIDisplay(latest.bmi, category);
+            }
+            renderBMIHistory();
+
+            // Load activity history
+            updateActivitySummary();
+            renderActivityHistory();
+
+            // Load heart rate history
+            const heartRateHistory = getHeartRateHistory();
+            if (heartRateHistory.length > 0) {
+                updateHeartRateDisplay(heartRateHistory[0]);
+            }
+            renderHeartRateHistory();
+        }
+
+        // ==================== Notification ====================
+        function showNotification(message) {
+            // Simple notification (can be enhanced)
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(0, 122, 255, 0.4);
+                z-index: 10000;
+                font-weight: 500;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add notification animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
